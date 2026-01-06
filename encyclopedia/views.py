@@ -5,24 +5,18 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+
 class NewForm(forms.Form):
     title1 = forms.CharField()
 
+
 def index(request):
-    title1 = None
-    if request.method == "POST":
-        form = NewForm(request.POST)
-        if form.is_valid():
-            title1 = form.cleaned_data["title1"]
-            return HttpResponseRedirect(reverse("title", args=[title1]))
-        else:
-            return render(request, "encyclopedia/index.html", {"form": form})
 
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries(),
-        "form": NewForm(),
-        "title1": title1
+        "entries": util.list_entries()
     })
+
+
 
 def get_data(request, title):
 
@@ -42,19 +36,23 @@ def get_data(request, title):
         "content": html_content,
     })
 
-def search(request, title2):
-    if request.method == "POST":
-        form = NewForm(request.POST)
-        if form.is_valid():
-            title2 = form.cleaned_data["title1"]
-            return HttpResponseRedirect(reverse("title", args=[title2]))
-        else:
-            return render(request, "encyclopedia/index.html", {"form": form})
-        
+
+
+def search(request):
+    query = request.GET.get("q", "").strip()
+    entries = util.list_entries()
+
+    # 1️⃣ Exact match → go to page
+    for entry in entries:
+        if entry.lower() == query.lower():
+            return HttpResponseRedirect(reverse("title", args=[entry]))
+
+    # 2️⃣ Substring results
+    results = [entry for entry in entries if query.lower() in entry.lower()]
+
     return render(request, "encyclopedia/search.html", {
-        "entries2":util.list_entries(),
-        "form": NewForm(),
-        "title2": title2
+        "query": query,
+        "results": results
     })
     
 
