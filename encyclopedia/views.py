@@ -42,16 +42,32 @@ def search(request):
     query = request.GET.get("q", "").strip()
     entries = util.list_entries()
 
-    # 1️⃣ Exact match → go to page
+    # Exact match → go to page
     for entry in entries:
         if entry.lower() == query.lower():
             return HttpResponseRedirect(reverse("title", args=[entry]))
 
-    # 2️⃣ Substring results
+    # Substring results
     results = [entry for entry in entries if query.lower() in entry.lower()]
 
     return render(request, "encyclopedia/search.html", {
         "query": query,
+        "results": results
+    })
+
+def create_new_page(request):
+    title = request.GET.get("page_name","").strip()
+    entries = util.list_entries()
+
+    results = [entry for entry in entries if entry.lower() == title.lower()]
+
+    if results:
+        return render(request, "encyclopedia/error_existingentry.html", {
+            "title": title
+        })
+
+    return render(request, "encyclopedia/create.html", {
+        "title":title,
         "results": results
     })
     

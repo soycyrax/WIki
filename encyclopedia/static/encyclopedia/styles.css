@@ -35,4 +35,10 @@ textarea {
 
 .sidebar h2 {
     margin-top: 5px;
+
+}
+
+#content {
+    width: 300px !important;  /* shrink width */
+    height: 120px !important;  /* shrink height */
 }
