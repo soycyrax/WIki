@@ -1,5 +1,9 @@
 {% extends "encyclopedia/layout.html" %}
 
+{% block title %}
+    Search
+{% endblock %}
+
 {% block body %}
 <h1>Results for "{{ query }}"</h1>
 
@@ -13,3 +17,4 @@
 <p>No matches found.</p>
 {% endif %}
 {% endblock %}
+
