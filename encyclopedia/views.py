@@ -89,8 +89,27 @@ def create_new_page(request):
     return render(request, "encyclopedia/create.html", {
         "title":title,
         "results": results,
-    
     })
+
+def edit(request, title):
+    if request.method == "GET":
+        content = util.get_entry(title)
+
+        if content is None:
+            return render(request, "encyclopedia/error.html", {
+                "message": "Page not found"
+            })
+
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "content": content
+        })
+
+    else:  # POST
+        new_content = request.POST["content"]
+        util.save_entry(title, new_content)
+        return HttpResponseRedirect(reverse("title", args=[title]))
+
     
 
 
