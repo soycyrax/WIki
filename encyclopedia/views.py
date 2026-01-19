@@ -4,6 +4,7 @@ import markdown2
 from django import forms
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+import random
 
 
 class NewForm(forms.Form):
@@ -109,6 +110,11 @@ def edit(request, title):
         new_content = request.POST["content"]
         util.save_entry(title, new_content)
         return HttpResponseRedirect(reverse("title", args=[title]))
+    
+def random_page(request):
+    entries = util.list_entries()
+    random_entry = random.choice(entries)
+    return HttpResponseRedirect(reverse("title", args=[random_entry]))
 
     
 
